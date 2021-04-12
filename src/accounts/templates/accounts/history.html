@@ -1,0 +1,26 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block content %}
+
+    {% if request.user.is_authenticated %}
+
+        {% for i in history %}
+
+            <p>
+                {{ i }}
+            </p>
+
+        {% endfor %}
+
+    {% else %}
+
+        <h3>You do not have any history</h3>
+
+    {% endif %}
+
+{% endblock %}
+

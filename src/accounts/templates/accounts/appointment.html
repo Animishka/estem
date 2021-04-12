@@ -1,0 +1,35 @@
+{% extends 'accounts/base.html' %}
+
+    {% block title %}
+
+            Make an appointment
+
+    {% endblock %}
+
+
+
+    {% block content %}
+
+        <h4>You can make an appointment here, {{ user.first_name|title }}</h4>
+
+        <form action="{% url 'appointment_url' %}" method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+
+                <div class="form-group">
+                    <div class="col-8 mx-lef my-5">
+                        {{ field.label}}
+                        {{ field }}
+                    </div>
+                </div>
+
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+    {% endblock %}
+
+
+
+

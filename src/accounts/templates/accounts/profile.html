@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+        Profile of {{ user_profile.first_name }}
+{% endblock %}
+
+{% block content %}
+        <div>
+            <h3>Your Profile, {{ user_profile.first_name }}</h3>
+        </div>
+        <div class="card" style="width: 18rem;">
+          <img src="..." class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">Dear {{user_profile.first_name}}, this is your Profile.</p>
+            <p class="card-text">You can change any detail whenever.</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{user_profile.first_name}}</li>
+            <li class="list-group-item">{{user_profile.last_name}}</li>
+            <li class="list-group-item">{{user_profile.email}}</li>
+            <li class="list-group-item">{{user_profile.phone_number}}</li>
+          </ul>
+          <div class="card-body">
+            <a href="{% url 'edit_url' %}" class="card-link">Edit</a>
+            <a href="#" class="card-link">Delete</a>
+          </div>
+        </div>
+
+{% endblock %}
