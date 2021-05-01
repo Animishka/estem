@@ -10,21 +10,37 @@
 
     {% block content %}
 
-        <h4>You can make an appointment here, {{ user.first_name|title }}</h4>
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <h3>You can make an appointment here, {{ user.first_name|title }}</h3>
+            </blockquote>
+        </figure>
 
         <form action="{% url 'appointment_url' %}" method="post">
+
             {% csrf_token %}
 
             {% for field in form %}
 
-                <div class="form-group">
-                    <div class="col-8 mx-lef my-5">
-                        {{ field.label}}
-                        {{ field }}
+                {% if field.errors %}
+
+                    <div class="alert alert-danger">
+
+                        {{ field.errors}}
+
                     </div>
+
+                {% endif %}
+
+                <div class="form-group">
+
+                    {{ field.label}}
+                    {{ field }}
+
                 </div>
 
             {% endfor %}
+
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
