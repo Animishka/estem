@@ -1,8 +1,7 @@
 from django.db import models
-
+import os
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
-from django.shortcuts import reverse
 
 
 # redefinition user manager
@@ -41,6 +40,7 @@ class MyUserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+
 
 # redefinition user model
 class MyUser(AbstractBaseUser):
@@ -91,71 +91,27 @@ class MyUser(AbstractBaseUser):
 
 class UserAppointment(models.Model):
 
-    email = models.ForeignKey(MyUser, related_name='my_user_appointment',
-                              on_delete=models.CASCADE)
+    email = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     CHOICE_SPECIALIST = (
-        ('СI', 'Сosmetologist Ivanov'),
-        ('DA', 'Dermatologist Andreev'),
-        ('DV', 'Dermatologist Vasilyev'),
-        ('CA', 'Сosmetologist Antonov'),
+        ('Сosmetologist Ivanov', 'Сosmetologist Ivanov'),
+        ('Dermatologist Andreev', 'Dermatologist Andreev'),
+        ('Dermatologist Vasilyev', 'Dermatologist Vasilyev'),
+        ('Сosmetologist Antonov', 'Сosmetologist Antonov'),
     )
-    specialist = models.CharField(max_length=20,
+    specialist = models.CharField(max_length=40,
                               help_text="choose the specialist",
                               choices=CHOICE_SPECIALIST, blank=False)
     date_appointment = models.DateTimeField(auto_now=False,
                                             help_text="choose the date appointment",
                                             auto_now_add=False, blank=False)
 
-
     def __str__(self):
         return self.specialist
-"""
-    def save(self):
-        id_user = request.user.id
-        current_user = MyUser.objects.get(id=id_user)
-        new_appointment = current_user.my_user_appointment.create(specialist=self.cleaned_data['specialist'],
-                                                                  date_appointment=self.cleaned_data['date_appointment'])
-        return new_appointment
-"""
 
-class UserProfile(models.Model):
 
-    email = models.ForeignKey(MyUser, related_name='my_user_profile',
-                              on_delete=models.CASCADE)
-
-    CHOICE_GENDER = (
-        ('Male', 'Male'),
-        ('Female', 'Female'),
+class UserPhoto(models.Model):
+    email = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    photo = models.ImageField(
+        null=True,
+        blank=True,
     )
-
-    gender = models.CharField(max_length=6,
-                              help_text="choose the gender",
-                              choices=CHOICE_GENDER, blank=True)
-
-    add_photo = models.ImageField(verbose_name='picture before', blank=True)
-
-    def __str__(self):
-        return self.email
-
-
-"""
-class UserProfile(models.Model):
-    email = models.EmailField(max_length=150, unique=True, blank=False)
-    name = models.CharField(max_length=150, db_index=True)
-    age = models.DecimalField(max_digits=2, decimal_places=0, blank=True)
-    date_reg = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-    
-    #интересный вариант формирования url автоматический, в шаблоне html потом просто
-    #подставить в href {{ ИмяМодели.get_absolute_url }}
-    #например href="{{ UserProfile.get_absolute_url }}"
-    
-    #def get_absolute_url(self):
-    #    return reverse('profile_url')
-        
-    #подходит для вариантов, когда в urls.py в path прописывается posts/<str:slug>/ , например
-"""
-
-
