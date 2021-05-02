@@ -15,7 +15,8 @@ import PIL
 from .forms import LogInForm, UserAppointmentForm, UserPhotoForm
 
 
-
+""" регистрация нового пользователя, после успешного создания профиля пользователя
+редирект на страницу с авторизацией """
 class RegisterView(View):
     def get(self, request):
         form = UserCreationForm()
@@ -31,6 +32,9 @@ class RegisterView(View):
                       context={'form': bound_form})
 
 
+""" возможность для пользователя записаться к специалисту мед.учреждения через форму.
+если поступает POST запрос, то определяется user по id и сохраняется новая 
+запись по связи 'многие к одному' """
 class AppointmentView(View):
     def get(self, request):
         if request.user.is_authenticated:
@@ -53,6 +57,8 @@ class AppointmentView(View):
         return render(request, 'accounts/appointment.html', context={'form': bound_form})
 
 
+""" вся история записей к специалисту мед.учреждения, определяется user и выводятся все записи,
+которые относятся к этому user из модели UserAppointment """
 def history_view(request):
     if request.user.is_authenticated:
         user = MyUser.objects.get(id=request.user.id)
@@ -62,6 +68,8 @@ def history_view(request):
     return redirect('login_url')
 
 
+""" авторизация пользователя, данные берутся из словаря cleaned_data,
+используются функции authenticate и login из модуля django.contrib.auth """
 class LoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
@@ -86,12 +94,14 @@ class LoginView(View):
         return render(request, 'accounts/login.html', context={'form': bound_form})
 
 
+""" используется функция logout из модуля django.contrib.auth """
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
         return redirect('home_url')
 
 
+# подтверждение удаления профиля пользователя
 def delete_confirmation_view(request):
     if request.user.is_authenticated:
         user = MyUser.objects.get(id=request.user.id)
@@ -99,13 +109,16 @@ def delete_confirmation_view(request):
     return redirect('login_url')
 
 
+""" удаление экземпляра модели MyUser, если пользователь подтвердил желание удалить профиль.
+Фотография (модель UserPhoto) и записи пользователя с пециалистам мед.учреждения (модель UserAppointment)
+удаляются автоматически """
 def delete_view(request):
     if request.user.is_authenticated:
         user = MyUser.objects.get(id=request.user.id).delete()
         return redirect('home_url')
     return redirect('login_url')
 
-
+# отображение страницы с данными профиля пользователя (модели UserPhoto и MyUser)
 def profile_view(request):
     if request.user.is_authenticated:
         user_profile = MyUser.objects.get(id=request.user.id)
@@ -117,6 +130,9 @@ def profile_view(request):
     return redirect('login_url')
 
 
+""" обновление данных пользователя.
+ID пользователя остается неизменным (связи с другими моделями не нарушаются),
+меняется только содержимое атрибутов модели MyUser """
 class EditView(View):
     def get(self, request):
         user = MyUser.objects.get(id=request.user.id)
@@ -135,13 +151,17 @@ class EditView(View):
             return redirect('login_url')
         return render(request, 'accounts/edit.html',
                       context={'form': bound_form, 'user': user})
-    
 
+
+""" декоратор принимает сигналы на удаление экземпляров класса UserPhoto.
+Функция userphoto_delete позволяет удалить не только запись в БД в модели UserPhoto,
+но и удалить само фото из хранилища для экономии пространства на диске"""
 @receiver(pre_delete, sender=UserPhoto)
 def userphoto_delete(sender, instance, **kwargs):
     instance.photo.delete(False)
 
 
+""" Обновление фотографии пользователя. Старая фотография удаляется автоматически из модели UserPhoto и из хранилища"""
 class UploadPhotoView(View):
 
     def get(self, request):
