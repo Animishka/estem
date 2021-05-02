@@ -1,0 +1,44 @@
+{% extends 'accounts/base.html' %}
+
+    {% block title %}
+            Add photo
+    {% endblock %}
+
+    {% block content %}
+
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <h3>You can add photo at profile, {{ user.first_name|title }}</h3>
+            </blockquote>
+        </figure>
+
+        <form action="{% url 'upload_photo_url' %}" method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in form %}
+
+                {% if field.errors %}
+                    <div class="alert alert-danger">
+                        {{ field.errors}}
+                    </div>
+                {% endif %}
+
+                    {{ field.label}}
+                    <p>
+                      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        {{ field }}
+                      </button>
+                    </p>
+
+
+
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Add photo</button>
+        </form>
+
+    {% endblock %}
+
+
+
+
