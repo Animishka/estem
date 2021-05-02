@@ -6,21 +6,35 @@
 
 {% block content %}
 
-    {% if request.user.is_authenticated %}
+        {% if appointments %}
+                <figure class="text-center">
+                  <blockquote class="blockquote">
+                    <h3>History of your appointments</h3>
+                  </blockquote>
+                </figure>
 
-        {% for i in history %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Specialist</th>
+                      <th scope="col">Date and time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for i in appointments %}
+                    <tr>
+                      <td>{{ i.specialist }}</td>
+                      <td>{{ i.date_appointment }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
 
-            <p>
-                {{ i }}
-            </p>
+        {% else %}
 
-        {% endfor %}
+            <h3>You did not have any history</h3>
 
-    {% else %}
-
-        <h3>You do not have any history</h3>
-
-    {% endif %}
+        {% endif %}
 
 {% endblock %}
 
