@@ -22,6 +22,12 @@
                     </div>
                 {% endif %}
 
+                {% if not_found %}
+                    <div class="alert alert-danger">
+                        {{ not_found }}
+                    </div>
+                {% endif %}
+
                 <div class="form-group">
                     {{ field.label}}
                     {{ field }}
