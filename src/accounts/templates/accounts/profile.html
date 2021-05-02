@@ -5,25 +5,33 @@
 {% endblock %}
 
 {% block content %}
-        <div>
-            <h3>Your Profile, {{ user_profile.first_name }}</h3>
-        </div>
-        <div class="card" style="width: 18rem;">
-          <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <p class="card-text">Dear {{user_profile.first_name}}, this is your Profile.</p>
-            <p class="card-text">You can change any detail whenever.</p>
-          </div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">{{user_profile.first_name}}</li>
-            <li class="list-group-item">{{user_profile.last_name}}</li>
-            <li class="list-group-item">{{user_profile.email}}</li>
-            <li class="list-group-item">{{user_profile.phone_number}}</li>
-          </ul>
-          <div class="card-body">
-            <a href="{% url 'edit_url' %}" class="card-link">Edit</a>
-            <a href="#" class="card-link">Delete</a>
-          </div>
+
+
+        <div class="card">
+            {% if userphoto %}
+                {% for photo in userphoto %}
+                    <img src="{{ photo.photo.url }}" class="img-thumbnail rounded mx-auto d-block" width="300" height="300">
+                {% endfor %}
+            {% else %}
+                <img src="/photos/default.png" class="img-thumbnail rounded mx-auto d-block" width="300" height="300">
+            {% endif %}
+            <div class="card-header">
+                <h3>Your Profile, {{ user_profile.first_name }}</h3>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">You can change any detail whenever.</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{user_profile.first_name}}</li>
+                    <li class="list-group-item">{{user_profile.last_name}}</li>
+                    <li class="list-group-item">{{user_profile.email}}</li>
+                    <li class="list-group-item">{{user_profile.phone_number}}</li>
+                </ul>
+                <div class="card-body">
+                    <a href="{% url 'edit_url' %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'upload_photo_url' %}" class="btn btn-primary">Add photo</a>
+                    <a href="{% url 'delete_confirmation_url' %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
         </div>
 
 {% endblock %}
